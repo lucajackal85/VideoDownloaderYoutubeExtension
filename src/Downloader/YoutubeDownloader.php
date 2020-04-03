@@ -35,7 +35,7 @@ class YoutubeDownloader extends AbstractDownloader
             return [];
         }
 
-        if(is_string($this->options['format'])){
+        if(!is_array($this->options['format'])){
             return [$this->options['format']];
         }
 
