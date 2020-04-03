@@ -3,7 +3,6 @@
 namespace Jackal\Downloader\Ext\Youtube\Downloader;
 
 use Jackal\Downloader\Downloader\AbstractDownloader;
-use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;
 use Jackal\Downloader\Ext\Youtube\Filter\VideoResultFilter;
 use Jackal\Downloader\Ext\Youtube\Validator\CUrlValidator;
 

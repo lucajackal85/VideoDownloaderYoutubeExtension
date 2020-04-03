@@ -50,14 +50,14 @@ class VideoResultFilter
             }
         }
 
+        if ($outVideos == []) {
+            throw YoutubeDownloaderException::videoURLsNotFound();
+        }
+
         ksort($outVideos, SORT_NUMERIC);
 
         if ($selectedFormat and !array_key_exists($selectedFormat, $outVideos)) {
             throw YoutubeDownloaderException::formatNotFound($selectedFormat, $outVideos);
-        }
-
-        if ($outVideos == []) {
-            throw YoutubeDownloaderException::videoURLsNotFound();
         }
 
         return $outVideos;

@@ -31,4 +31,13 @@ class FilterFormatTest extends TestCase
             ['format' => '240p audio video', 'url' => 'url_2'],
         ], 1080);
     }
+
+    public function testItShouldRaiseExceptionOnFormatNotFoundEmpyuResults()
+    {
+        $this->expectException(YoutubeDownloaderException::class);
+        $this->expectExceptionMessage('No valid video URLs found');
+
+        $filter = new VideoResultFilter();
+        $filter->filter([], 1080);
+    }
 }
