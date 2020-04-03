@@ -56,6 +56,10 @@ class VideoResultFilter
             throw YoutubeDownloaderException::formatNotFound($selectedFormat, $outVideos);
         }
 
+        if ($outVideos == []) {
+            throw YoutubeDownloaderException::videoURLsNotFound();
+        }
+
         return $outVideos;
     }
 
@@ -67,7 +71,8 @@ class VideoResultFilter
             }
 
             preg_match('/([0-9]{2,4})p/', $string, $match);
-            return isset($match[1]) ? $match[1] : null;
+
+            return $match[1] ?? null;
         }
     }
 }

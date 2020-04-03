@@ -8,7 +8,7 @@ class YoutubeDownloaderException extends DownloadException
 {
     public static function videoURLsNotFound()
     {
-        return new YoutubeDownloaderException('No video URLs found');
+        return new YoutubeDownloaderException('No valid video URLs found');
     }
 
     public static function formatNotFound($expected, array $available)

@@ -27,10 +27,6 @@ class YoutubeDownloader extends AbstractDownloader
         $videoFilter->setValidator(new CUrlValidator());
         $formatVideos = $videoFilter->filter($links, $this->getFormat());
 
-        if ($formatVideos == []) {
-            throw YoutubeDownloaderException::videoURLsNotFound();
-        }
-
         return $this->getFormat() ? $formatVideos[$this->getFormat()] : end($formatVideos);
     }
 

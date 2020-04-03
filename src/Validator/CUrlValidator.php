@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Jackal\Downloader\Ext\Youtube\Validator;
 
 class CUrlValidator implements ValidatorInterface

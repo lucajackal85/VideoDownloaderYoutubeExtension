@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Jackal\Downloader\Ext\Youtube\Tests\Filter;
 
 use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;

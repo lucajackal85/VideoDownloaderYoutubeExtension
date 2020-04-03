@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Jackal\Downloader\Ext\Youtube\Tests\Filter;
 
 use Jackal\Downloader\Ext\Youtube\Filter\VideoResultFilter;
@@ -19,7 +18,7 @@ class FilterValidatorTest extends TestCase
         $filter->setValidator($mockValidator);
         $results = $filter->filter([
             ['format' => '240p audio video', 'url' => 'url_1'],
-            ['format' => '360p audio video', 'url' => 'url_2']
+            ['format' => '360p audio video', 'url' => 'url_2'],
         ]);
 
         $this->assertEquals([
