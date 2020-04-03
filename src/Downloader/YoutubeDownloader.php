@@ -5,6 +5,7 @@ namespace Jackal\Downloader\Ext\Youtube\Downloader;
 use Jackal\Downloader\Downloader\AbstractDownloader;
 use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;
 use Jackal\Downloader\Ext\Youtube\Filter\VideoResultFilter;
+use Jackal\Downloader\Ext\Youtube\Validator\CUrlValidator;
 
 class YoutubeDownloader extends AbstractDownloader
 {
@@ -17,28 +18,17 @@ class YoutubeDownloader extends AbstractDownloader
 
     public function getURL() : string
     {
-        if (!filter_var($this->getVideoId(), FILTER_VALIDATE_URL)) {
-            $this->youtubeVideoURL = 'https://www.youtube.com/watch?v=' . $this->getVideoId();
-        }
+        $this->youtubeVideoURL = 'https://www.youtube.com/watch?v=' . $this->getVideoId();
 
         $yt = new \YouTube\YouTubeDownloader();
         $links = $yt->getDownloadLinks($this->youtubeVideoURL);
 
         $videoFilter = new VideoResultFilter();
+        $videoFilter->setValidator(new CUrlValidator());
         $formatVideos = $videoFilter->filter($links, $this->getFormat());
 
-        if($formatVideos == []){
+        if ($formatVideos == []) {
             throw YoutubeDownloaderException::videoURLsNotFound();
-        }
-
-        if ($this->getFormat() and !isset($formatVideos[$this->getFormat()])) {
-            throw new \Exception(
-                sprintf(
-                    'Format %s is not available. [Available formats are: %s]',
-                    $this->getFormat(),
-                    implode(', ', array_keys($formatVideos))
-                )
-            );
         }
 
         return $this->getFormat() ? $formatVideos[$this->getFormat()] : end($formatVideos);

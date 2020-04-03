@@ -2,43 +2,72 @@
 
 namespace Jackal\Downloader\Ext\Youtube\Filter;
 
+use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;
+use Jackal\Downloader\Ext\Youtube\Validator\ValidatorInterface;
+
 class VideoResultFilter
 {
-    public function filter(array $videos, string $selectedFormat = null) : array{
+    protected $validator;
+
+    public function setValidator(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
+    protected function hasValidator() : bool
+    {
+        return isset($this->validator);
+    }
+
+    protected function getValidator() : ?ValidatorInterface
+    {
+        return $this->validator;
+    }
+
+    public function filter(array $videos, string $selectedFormat = null) : array
+    {
         $outVideos = [];
 
-        foreach ($videos as $video){
+        foreach ($videos as $video) {
             if (isset($video['format'])) {
-                preg_match('/([0-9]{2,4})p/', $video['format'], $match);
-                if (isset($match[1])) {
-                        if(array_key_exists($match[1], $outVideos)){
-                            continue;
+                $formatFound = $this->checkContainsAudioAndVideoFormat($video['format']);
+                if (isset($formatFound)) {
+                    if (array_key_exists($formatFound, $outVideos)) {
+                        continue;
+                    }
+                    if ($this->hasValidator()) {
+                        if ($this->getValidator()->isValid($video['url'])) {
+                            $outVideos[$formatFound] = $video['url'];
                         }
-                        if($this->isValidHTTPURL($video['url'])){
-                            $outVideos[$match[1]] = $video['url'];
-                        }
+                    } else {
+                        $outVideos[$formatFound] = $video['url'];
+                    }
 
-                        if(array_key_exists($selectedFormat, $outVideos)){
-                            break;
-                        }
+                    if ($selectedFormat and array_key_exists($selectedFormat, $outVideos)) {
+                        return [$selectedFormat => $outVideos[$selectedFormat]];
+                    }
                 }
             }
         }
 
         ksort($outVideos, SORT_NUMERIC);
 
-        return $outVideos;
+        if ($selectedFormat and !array_key_exists($selectedFormat, $outVideos)) {
+            throw YoutubeDownloaderException::formatNotFound($selectedFormat, $outVideos);
+        }
 
+        return $outVideos;
     }
 
-    protected function isValidHTTPURL(string $url) : bool {
-        $handle = curl_init($url);
-        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'HEAD');
-        curl_setopt($handle, CURLOPT_TIMEOUT, 5);
-        curl_exec($handle);
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        curl_close($handle);
+    public function checkContainsAudioAndVideoFormat($string) : ?string
+    {
+        foreach (['audio', 'video'] as $elem) {
+            if (strpos($string, $elem) === false) {
+                return null;
+            }
 
-        return $httpCode < 400;
+            preg_match('/([0-9]{2,4})p/', $string, $match);
+            return isset($match[1]) ? $match[1] : null;
+        }
     }
 }
