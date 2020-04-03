@@ -26,7 +26,7 @@ class YoutubeDownloader extends AbstractDownloader
         $videoFilter->setValidator(new CUrlValidator());
         $formatVideos = $videoFilter->filter($links, $this->getFormats());
 
-        return array_shift(array_slice($formatVideos, 0, 1));
+        return array_values($formatVideos)[0];
     }
 
     protected function getFormats() : array
