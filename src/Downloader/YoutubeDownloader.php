@@ -25,7 +25,7 @@ class YoutubeDownloader extends AbstractDownloader
         $links = $yt->getDownloadLinks($this->youtubeVideoURL);
 
         $videoFilter = new VideoResultFilter();
-        $formatVideos = $videoFilter->filter($links,$this->getFormat());
+        $formatVideos = $videoFilter->filter($links, $this->getFormat());
 
         if($formatVideos == []){
             throw YoutubeDownloaderException::videoURLsNotFound();
