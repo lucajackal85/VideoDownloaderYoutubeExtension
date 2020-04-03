@@ -3,6 +3,8 @@
 namespace Jackal\Downloader\Ext\Youtube\Downloader;
 
 use Jackal\Downloader\Downloader\AbstractDownloader;
+use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;
+use Jackal\Downloader\Ext\Youtube\Filter\VideoResultFilter;
 
 class YoutubeDownloader extends AbstractDownloader
 {
@@ -22,20 +24,12 @@ class YoutubeDownloader extends AbstractDownloader
         $yt = new \YouTube\YouTubeDownloader();
         $links = $yt->getDownloadLinks($this->youtubeVideoURL);
 
-        $videos = array_values($links);
+        $videoFilter = new VideoResultFilter();
+        $formatVideos = $videoFilter->filter($links,$this->getFormat());
 
-        $formatVideos = [];
-
-        foreach ($videos as $video) {
-            if (isset($video['format'])) {
-                preg_match('/([0-9]{2,4})p/', $video['format'], $match);
-                if (isset($match[1])) {
-                    $formatVideos[$match[1]] = $video['url'];
-                }
-            }
+        if($formatVideos == []){
+            throw YoutubeDownloaderException::videoURLsNotFound();
         }
-
-        ksort($formatVideos, SORT_NUMERIC);
 
         if ($this->getFormat() and !isset($formatVideos[$this->getFormat()])) {
             throw new \Exception(
@@ -52,6 +46,6 @@ class YoutubeDownloader extends AbstractDownloader
 
     protected function getFormat() : ?string
     {
-        return $this->options['format'];
+        return isset($this->options['format']) ? $this->options['format'] : null;
     }
 }
