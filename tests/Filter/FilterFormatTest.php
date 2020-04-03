@@ -15,9 +15,32 @@ class FilterFormatTest extends TestCase
             ['format' => '360p audio video', 'url' => 'url_1'],
             ['format' => '240p audio video', 'url' => 'url_0'],
             ['format' => '240p audio video', 'url' => 'url_2'],
-        ], 240);
+        ], [240]);
 
         $this->assertEquals(['240' => 'url_0'], $results);
+    }
+
+    public function testFilterReturnMultipleFormat()
+    {
+        $filter = new VideoResultFilter();
+        $results = $filter->filter([
+            ['format' => '144p audio video', 'url' => 'url_0'],
+            ['format' => '360p audio video', 'url' => 'url_1'],
+            ['format' => '480p audio video', 'url' => 'url_2'],
+        ], [240,360]);
+
+        $this->assertEquals(['360' => 'url_1'], $results);
+    }
+
+    public function testFilterReturnMultipleFormatInversed()
+    {
+        $filter = new VideoResultFilter();
+        $results = $filter->filter([
+            ['format' => '360p audio video', 'url' => 'url_1'],
+            ['format' => '480p audio video', 'url' => 'url_2'],
+        ], [240,480,360]);
+
+        $this->assertEquals(['360' => 'url_1'], $results);
     }
 
     public function testItShouldRaiseExceptionOnFormatNotFound()
@@ -29,7 +52,7 @@ class FilterFormatTest extends TestCase
         $filter->filter([
             ['format' => '360p audio video', 'url' => 'url_1'],
             ['format' => '240p audio video', 'url' => 'url_2'],
-        ], 1080);
+        ], [1080]);
     }
 
     public function testItShouldRaiseExceptionOnFormatNotFoundEmpyuResults()
@@ -38,6 +61,6 @@ class FilterFormatTest extends TestCase
         $this->expectExceptionMessage('No valid video URLs found');
 
         $filter = new VideoResultFilter();
-        $filter->filter([], 1080);
+        $filter->filter([], [1080]);
     }
 }

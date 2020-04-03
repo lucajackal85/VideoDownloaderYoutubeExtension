@@ -72,6 +72,6 @@ class FilterTest extends TestCase
         $this->expectExceptionMessage('No valid video URLs found');
 
         $filter = new VideoResultFilter();
-        $results = $filter->filter([]);
+        $filter->filter([]);
     }
 }

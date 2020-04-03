@@ -24,13 +24,22 @@ class YoutubeDownloader extends AbstractDownloader
 
         $videoFilter = new VideoResultFilter();
         $videoFilter->setValidator(new CUrlValidator());
-        $formatVideos = $videoFilter->filter($links, $this->getFormat());
+        $formatVideos = $videoFilter->filter($links, $this->getFormats());
 
-        return $this->getFormat() ? $formatVideos[$this->getFormat()] : end($formatVideos);
+        return array_values($formatVideos)[0];
     }
 
-    protected function getFormat() : ?string
+    protected function getFormats() : array
     {
-        return isset($this->options['format']) ? $this->options['format'] : null;
+        if(!isset($this->options['format'])){
+            return [];
+        }
+
+        if(!is_array($this->options['format'])){
+            return [$this->options['format']];
+        }
+
+        return $this->options['format'];
+
     }
 }
