@@ -1,0 +1,43 @@
+{
+  "name": "jackal/video-downloader-ext-youtube",
+  "type": "library",
+  "description": "Youtube extension for jackal/video-downloader package",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.1",
+    "jackal/video-downloader": "dev-development",
+    "athlon1600/youtube-downloader": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5",
+    "brainmaestro/composer-git-hooks": "^2.8",
+    "friendsofphp/php-cs-fixer": "^2.16"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jackal\\Downloader\\Ext\\Youtube\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jackal\\Downloader\\Ext\\Youtube\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "hooks": {
+      "pre-commit": [
+        "echo Committing as $(git config user.name) [$(git config user.email)]",
+        "vendor/bin/php-cs-fixer fix . --config=.php-cs"
+      ],
+      "pre-push": [
+        "vendor/bin/phpunit tests/"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "Luca",
+      "email": "luca.giacalone@edimotive.com"
+    }
+  ]
+}
