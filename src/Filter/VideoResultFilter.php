@@ -24,9 +24,10 @@ class VideoResultFilter
         return $this->validator;
     }
 
-    public function filter(array $videos, string $selectedFormat = null) : array
+    public function filter(array $videos, array $selectedFormats = []) : array
     {
         $outVideos = [];
+        sort($selectedFormats, SORT_NUMERIC);
 
         foreach ($videos as $video) {
             if (isset($video['format'])) {
@@ -43,8 +44,12 @@ class VideoResultFilter
                         $outVideos[$formatFound] = $video['url'];
                     }
 
-                    if ($selectedFormat and array_key_exists($selectedFormat, $outVideos)) {
-                        return [$selectedFormat => $outVideos[$selectedFormat]];
+                    if($selectedFormats != []) {
+                        foreach ($selectedFormats as $selectedFormat) {
+                            if (array_key_exists($selectedFormat, $outVideos)) {
+                                return [$selectedFormat => $outVideos[$selectedFormat]];
+                            }
+                        }
                     }
                 }
             }
@@ -56,8 +61,14 @@ class VideoResultFilter
 
         ksort($outVideos, SORT_NUMERIC);
 
-        if ($selectedFormat and !array_key_exists($selectedFormat, $outVideos)) {
-            throw YoutubeDownloaderException::formatNotFound($selectedFormat, $outVideos);
+        if($selectedFormats != []) {
+            foreach ($selectedFormats as $selectedFormat) {
+                if (array_key_exists($selectedFormat, $outVideos)) {
+                    return [$selectedFormat => $outVideos[$selectedFormat]];
+                }
+            }
+
+            throw YoutubeDownloaderException::formatNotFound($selectedFormats, $outVideos);
         }
 
         return $outVideos;
