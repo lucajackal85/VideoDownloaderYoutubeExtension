@@ -61,16 +61,6 @@ class VideoResultFilter
 
         ksort($outVideos, SORT_NUMERIC);
 
-        if($selectedFormats != []) {
-            foreach ($selectedFormats as $selectedFormat) {
-                if (array_key_exists($selectedFormat, $outVideos)) {
-                    return [$selectedFormat => $outVideos[$selectedFormat]];
-                }
-            }
-
-            throw YoutubeDownloaderException::formatNotFound($selectedFormats, $outVideos);
-        }
-
         return $outVideos;
     }
 
