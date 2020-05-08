@@ -2,7 +2,6 @@
 
 namespace Jackal\Downloader\Ext\Youtube\Tests\Filter;
 
-use Jackal\Downloader\Exception\DownloadException;
 use Jackal\Downloader\Ext\Youtube\Exception\YoutubeDownloaderException;
 use Jackal\Downloader\Ext\Youtube\Filter\VideoResultFilter;
 use PHPUnit\Framework\TestCase;
