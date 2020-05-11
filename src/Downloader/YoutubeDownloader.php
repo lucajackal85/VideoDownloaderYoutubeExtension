@@ -8,10 +8,9 @@ use Jackal\Downloader\Ext\Youtube\Validator\CUrlValidator;
 
 class YoutubeDownloader extends AbstractDownloader
 {
-    const VIDEO_TYPE = 'youtube';
-
     /** @var array $options */
     protected $options;
+
     /** @var string $youtubeVideoURL */
     protected $youtubeVideoURL;
 
@@ -29,5 +28,15 @@ class YoutubeDownloader extends AbstractDownloader
         $formatVideos = $this->filterByFormats($formatVideos);
 
         return array_values($formatVideos)[0];
+    }
+
+    public static function getPublicUrlRegex(): string
+    {
+        return '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i';
+    }
+
+    public static function getType(): string
+    {
+        return 'youtube';
     }
 }
