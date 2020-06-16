@@ -21,9 +21,13 @@ class YoutubeDownloader extends AbstractDownloader
 
     public function __construct($id, array $config = [])
     {
+        if(!array_key_exists('allow-no-audio',$config)){
+            $config['allow-no-audio'] = false;
+        }
+
         parent::__construct($id, $config);
 
-        $this->videoFilter = new VideoResultFilter();
+        $this->videoFilter = new VideoResultFilter($config['allow-no-audio']);
         $this->videoFilter->setValidator(new CUrlValidator());
 
         $this->youtubeVideoURL = 'https://www.youtube.com/watch?v=' . $this->getVideoId();
@@ -51,6 +55,7 @@ class YoutubeDownloader extends AbstractDownloader
     public function getURL() : string
     {
         $formatVideos = $this->filterByFormats($this->getDownloadLinks());
+
         return array_values($formatVideos)[0];
     }
 
@@ -62,6 +67,7 @@ class YoutubeDownloader extends AbstractDownloader
     public function getFormatsAvailable(): array
     {
         $formatVideos = $this->filterByFormats($this->getDownloadLinks());
+
         return array_keys($formatVideos);
     }
 

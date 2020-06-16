@@ -7,6 +7,13 @@ use Jackal\Downloader\Ext\Youtube\Validator\ValidatorInterface;
 
 class VideoResultFilter
 {
+    protected $allowNoAudio;
+
+    public function __construct($allowNoAudio = false)
+    {
+        $this->allowNoAudio = $allowNoAudio;
+    }
+
     protected $validator;
 
     public function setValidator(ValidatorInterface $validator)
@@ -68,7 +75,9 @@ class VideoResultFilter
     {
         foreach (['audio', 'video'] as $elem) {
             if (strpos($string, $elem) === false) {
-                return null;
+                if(!$this->allowNoAudio) {
+                    return null;
+                }
             }
 
             preg_match('/([0-9]{2,4})p/', $string, $match);
