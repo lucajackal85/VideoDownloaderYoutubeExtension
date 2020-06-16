@@ -21,7 +21,7 @@ class YoutubeDownloader extends AbstractDownloader
 
     public function __construct($id, array $config = [])
     {
-        if(!array_key_exists('allow-no-audio',$config)){
+        if(!array_key_exists('allow-no-audio', $config)){
             $config['allow-no-audio'] = false;
         }
 
